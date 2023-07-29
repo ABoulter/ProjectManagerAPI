@@ -3,17 +3,22 @@
 namespace App\Http\Controllers;
 
 use App\Models\Task;
+use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Resources\TaskResource;
 use App\Http\Resources\TaskCollection;
 use App\Http\Requests\StoreTaskRequest;
 use App\Http\Requests\updateTaskRequest;
+use Spatie\QueryBuilder\AllowedFilter;
+use Spatie\QueryBuilder\QueryBuilder;
 
 class TaskController extends Controller
 {
     public function index(Request $request)
     {
-        return new TaskCollection(Task::all());
+
+        $tasks = QueryBuilder::for (Task::class)->allowedFilters('is_done')->defaultSort('-create_at')->allowedSorts(['title', 'is_done', 'created_at'])->paginate();
+        return new TaskCollection($tasks);
     }
 
     public function show(Request $request, Task $task)
