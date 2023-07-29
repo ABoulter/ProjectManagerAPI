@@ -6,11 +6,12 @@ use App\Models\Task;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Resources\TaskResource;
+use Illuminate\Support\Facades\Auth;
+use Spatie\QueryBuilder\QueryBuilder;
 use App\Http\Resources\TaskCollection;
+use Spatie\QueryBuilder\AllowedFilter;
 use App\Http\Requests\StoreTaskRequest;
 use App\Http\Requests\updateTaskRequest;
-use Spatie\QueryBuilder\AllowedFilter;
-use Spatie\QueryBuilder\QueryBuilder;
 
 class TaskController extends Controller
 {
@@ -29,13 +30,12 @@ class TaskController extends Controller
     {
         $validated = $request->validated();
 
-        $task = Task::create($validated);
+        $task = Auth::user()->tasks()->create($validated);
         return new TaskResource($task);
     }
     public function update(updateTaskRequest $request, Task $task)
     {
         $validated = $request->validated();
-
         $task->update($validated);
         return new TaskResource($task);
     }
