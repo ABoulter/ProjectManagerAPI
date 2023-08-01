@@ -2,15 +2,24 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\ProjectCollection;
 use App\Models\Project;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Resources\ProjectResource;
 use App\Http\Requests\StoreProjectRequest;
 use App\Http\Requests\UpdateProjectRequest;
+use Spatie\QueryBuilder\AllowedInclude;
+use Spatie\QueryBuilder\QueryBuilder;
 
 class ProjectController extends Controller
 {
+
+    public function index(Request $request)
+    {
+        $projects = QueryBuilder::for (Project::class)->AllowedIncludes('tasks')->paginate();
+        return new ProjectCollection($projects);
+    }
     public function store(StoreProjectRequest $request)
     {
 
@@ -22,7 +31,7 @@ class ProjectController extends Controller
 
     public function show(Request $request, Project $project)
     {
-        return new ProjectResource($project);
+        return (new ProjectResource($project))->load('tasks');
     }
 
     public function update(UpdateProjectRequest $request, Project $project)
@@ -34,5 +43,11 @@ class ProjectController extends Controller
 
 
         return new ProjectResource($project);
+    }
+
+    public function destroy(Request $request, Project $project)
+    {
+        $project->delete();
+        return response()->noContent();
     }
 }
