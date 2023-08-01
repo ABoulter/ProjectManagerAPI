@@ -27,11 +27,7 @@ class updateTaskRequest extends FormRequest
             'title' => 'sometimes|required|max:255|string',
             'is_done' => 'sometimes|boolean',
             'project_id' => [
-                'nullable', Rule::exists('projects', 'id')->where(function ($query) {
-                    $query->where('creator_id', Auth::id());
-
-
-                })
+                'nullable', Rule::in(Auth::user()->memberships->pluck('id')),
             ]
         ];
     }
