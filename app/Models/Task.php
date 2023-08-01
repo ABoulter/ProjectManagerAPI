@@ -3,10 +3,11 @@
 namespace App\Models;
 
 use App\Models\User;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Database\Query\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Query\Builder;
 
 class Task extends Model
 {
@@ -15,7 +16,8 @@ class Task extends Model
 
     protected $fillable = [
         'title',
-        'is_done'
+        'is_done',
+        'project_id'
     ];
     protected $casts = [
         'is_done' => 'boolean'
@@ -24,6 +26,11 @@ class Task extends Model
     public function creator(): BelongsTo
     {
         return $this->belongsTo(User::class, 'creator_id');
+    }
+
+    public function project(): BelongsTo
+    {
+        return $this->belongsTo(Project::class);
     }
 
     protected static function booted(): void

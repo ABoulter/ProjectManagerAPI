@@ -2,6 +2,8 @@
 
 namespace App\Http\Requests;
 
+use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Foundation\Http\FormRequest;
 
 class updateTaskRequest extends FormRequest
@@ -23,7 +25,14 @@ class updateTaskRequest extends FormRequest
     {
         return [
             'title' => 'sometimes|required|max:255|string',
-            'is_done' => 'sometimes|boolean'
+            'is_done' => 'sometimes|boolean',
+            'project_id' => [
+                'nullable', Rule::exists('projects', 'id')->where(function ($query) {
+                    $query->where('creator_id', Auth::id());
+
+
+                })
+            ]
         ];
     }
 }
