@@ -26,6 +26,8 @@ class updateTaskRequest extends FormRequest
         return [
             'title' => 'sometimes|required|max:255|string',
             'is_done' => 'sometimes|boolean',
+            'scheduled_at' => 'sometimes|nullable|date',
+            'due_at' => 'sometimes|nullable|date',
             'project_id' => [
                 'nullable', Rule::in(Auth::user()->memberships->pluck('id')),
             ]
