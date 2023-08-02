@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Builder;
@@ -52,6 +53,14 @@ class Task extends Model
 
         $query->where('due_at', '>=', $fromDate)->where('due_at', '<=', $toDate);
 
+    }
+    public function scoreDue(Builder $query, string $filter)
+    {
+        if ($filter === 'today') {
+            $query->where('due_at', '=', Carbon::today()->toDateString());
+        } else if ($filter === 'past') {
+            $query->where('due_at', '<', Carbon::today()->toDateString());
+        }
     }
 
     protected static function booted(): void
